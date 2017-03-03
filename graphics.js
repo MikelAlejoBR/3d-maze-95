@@ -2,9 +2,7 @@ var renderer;
 var scene;
 var camera;
 
-const MAZESIZE = 100;
-const ADVANCELENGTH = 1;
-const POINTSTOGENERATE = 10;
+const MAZESIZE = 10;
 var entryPoint = [0, 0]; // X and Z COORDINATES respectively.
 
 function init()
@@ -25,22 +23,6 @@ function init()
 	camera.lookAt(scene.position);
 
 	controlCamera = new THREE.OrbitControls(camera);
-
-	/**
-	 * Plane
-	 */
-	var geometry = new THREE.PlaneGeometry(100, 100);
-	var material  = new THREE.MeshBasicMaterial({color: 0xffffff});
-	material.side = THREE.DoubleSide;
-	var plane = new THREE.Mesh(geometry, material);
-
-	plane.rotation.x = 0.5 * Math.PI; /* 90 degrees */
-
-	plane.position.x = 50;
-	plane.position.y = 0;
-	plane.position.z = 50;
-
-	scene.add(plane);
 
 	/**
 	 * Global axis creation
@@ -78,18 +60,49 @@ function init()
 	scene.add(axisY);
 	scene.add(axisZ);
 
-	var geometry = new THREE.SphereGeometry(1, 16, 16);
-	var material = new THREE.MeshBasicMaterial({color: 0xADD8E6});
+	var grid = generateMaze(MAZESIZE, MAZESIZE);
 
-	var vectorArray = new Array();
-	vectorArray = generatePoints(entryPoint, MAZESIZE, ADVANCELENGTH);
-	for(i=0; i<vectorArray.length; i++)
+	var coordinates = {
+		N: 1,
+		E: 2,
+		S: 3,
+		W: 4
+	}
+
+	var colored = 0xff0000;
+	var colorblue = 0x0000ff;
+	var colorgreen = 0x00ff00;
+	var colorgray = 0xD3D3D3;
+
+	for(var i=0; i<MAZESIZE; i++)
 	{
-		var sphere = new THREE.Mesh(geometry, material);
-		sphere.position.x = vectorArray[i].getComponent(0);
-		sphere.position.y = vectorArray[i].getComponent(1);
-		sphere.position.z = vectorArray[i].getComponent(2);
-		scene.add(sphere);
+		for(var j=0; j<MAZESIZE; j++)
+		{
+			var geometry = new THREE.PlaneGeometry(1, 1);
+			var material  = new THREE.MeshBasicMaterial();
+			switch (grid[j][i])
+			{
+				case coordinates.N:
+					material.color.setHex(colored);
+					break;
+				case coordinates.E:
+					material.color.setHex(colorblue);
+					break;
+				case coordinates.S:
+					material.color.setHex(colorgreen);
+					break;
+				case coordinates.W:
+					material.color.setHex(colorgray);
+					break;
+			}
+			material.side = THREE.DoubleSide;
+			var square = new THREE.Mesh(geometry, material);
+			square.rotation.x = 0.5 * Math.PI;
+			square.position.x = j;
+			square.position.y = 0;
+			square.position.z = i;
+			scene.add(square);
+		}
 	}
 
 	document.body.appendChild(renderer.domElement);
