@@ -69,6 +69,30 @@ function init()
 		W: 4
 	}
 
+	var material = new THREE.MeshBasicMaterial();
+	material.color.setHex(0x656565);
+	material.side = THREE.DoubleSide;
+
+	for(var i=0; i<MAZESIZE; i++)
+	{
+		for(var j=0; j<MAZESIZE; j++)
+		{
+			if(((j+1) < MAZESIZE)
+				&& (grid[j][i] != coordinates.E)
+				&& (grid[j+1][i] != coordinates.W)
+			)
+			{
+				geometry = new THREE.PlaneGeometry(1, 0.5);
+				var wall = new THREE.Mesh(geometry, material);
+				wall.rotation.y = 0.5 * Math.PI;
+				wall.position.y = 0.25;
+				wall.position.x = j + 0.5;
+				wall.position.z = i;
+				scene.add(wall);
+			}
+		}
+	}
+
 	var colored = 0xff0000;
 	var colorblue = 0x0000ff;
 	var colorgreen = 0x00ff00;
