@@ -90,6 +90,20 @@ function init()
 				wall.position.z = i;
 				scene.add(wall);
 			}
+
+			if(((i+1) < MAZESIZE)
+				&& (grid[j][i] != coordinates.S)
+				&& (grid[j][i+1] != coordinates.N)
+			)
+			{
+				geometry = new THREE.PlaneGeometry(0.5, 1);
+				var wall = new THREE.Mesh(geometry, material);
+				wall.rotation.z = 0.5 * Math.PI;
+				wall.position.x = j;
+				wall.position.y = 0.25;
+				wall.position.z = i + 0.5;
+				scene.add(wall);
+			}
 		}
 	}
 
