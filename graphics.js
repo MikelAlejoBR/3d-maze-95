@@ -64,49 +64,6 @@ function init()
 
 	generateWalls(grid);
 
-	var coordinates = {
-		N: 1,
-		E: 2,
-		S: 3,
-		W: 4
-	}
-
-	var colored = 0xff0000;
-	var colorblue = 0x0000ff;
-	var colorgreen = 0x00ff00;
-	var colorgray = 0xD3D3D3;
-
-	for(var i=0; i<MAZESIZE; i++)
-	{
-		for(var j=0; j<MAZESIZE; j++)
-		{
-			var geometry = new THREE.PlaneGeometry(1, 1);
-			var material  = new THREE.MeshBasicMaterial();
-			switch (grid[j][i])
-			{
-				case coordinates.N:
-					material.color.setHex(colored);
-					break;
-				case coordinates.E:
-					material.color.setHex(colorblue);
-					break;
-				case coordinates.S:
-					material.color.setHex(colorgreen);
-					break;
-				case coordinates.W:
-					material.color.setHex(colorgray);
-					break;
-			}
-			material.side = THREE.DoubleSide;
-			var square = new THREE.Mesh(geometry, material);
-			square.rotation.x = 0.5 * Math.PI;
-			square.position.x = j;
-			square.position.y = 0;
-			square.position.z = i;
-			scene.add(square);
-		}
-	}
-
 	document.body.appendChild(renderer.domElement);
 	render();
 }
@@ -151,6 +108,57 @@ function generateWalls(grid)
 				wall.position.z = i + 0.5;
 				scene.add(wall);
 			}
+		}
+	}
+}
+
+/**
+ * Generates and places in the scene a colored square for each cell of the
+ * given grid
+ * @param  array two dimensional array containing the grid
+ */
+function generateColoredSquares(grid)
+{
+	var coordinates = {
+		N: 1,
+		E: 2,
+		S: 3,
+		W: 4
+	}
+
+	var colored = 0xff0000;
+	var colorblue = 0x0000ff;
+	var colorgreen = 0x00ff00;
+	var colorgray = 0xD3D3D3;
+
+	for(var i=0; i<MAZESIZE; i++)
+	{
+		for(var j=0; j<MAZESIZE; j++)
+		{
+			var geometry = new THREE.PlaneGeometry(1, 1);
+			var material  = new THREE.MeshBasicMaterial();
+			switch (grid[j][i])
+			{
+				case coordinates.N:
+					material.color.setHex(colored);
+					break;
+				case coordinates.E:
+					material.color.setHex(colorblue);
+					break;
+				case coordinates.S:
+					material.color.setHex(colorgreen);
+					break;
+				case coordinates.W:
+					material.color.setHex(colorgray);
+					break;
+			}
+			material.side = THREE.DoubleSide;
+			var square = new THREE.Mesh(geometry, material);
+			square.rotation.x = 0.5 * Math.PI;
+			square.position.x = j;
+			square.position.y = 0;
+			square.position.z = i;
+			scene.add(square);
 		}
 	}
 }
