@@ -62,49 +62,13 @@ function init()
 
 	var grid = generateMaze(MAZESIZE, MAZESIZE);
 
+	generateWalls(grid);
+
 	var coordinates = {
 		N: 1,
 		E: 2,
 		S: 3,
 		W: 4
-	}
-
-	var material = new THREE.MeshBasicMaterial();
-	material.color.setHex(0x656565);
-	material.side = THREE.DoubleSide;
-
-	for(var i=0; i<MAZESIZE; i++)
-	{
-		for(var j=0; j<MAZESIZE; j++)
-		{
-			if(((j+1) < MAZESIZE)
-				&& (grid[j][i] != coordinates.E)
-				&& (grid[j+1][i] != coordinates.W)
-			)
-			{
-				geometry = new THREE.PlaneGeometry(1, 0.5);
-				var wall = new THREE.Mesh(geometry, material);
-				wall.rotation.y = 0.5 * Math.PI;
-				wall.position.y = 0.25;
-				wall.position.x = j + 0.5;
-				wall.position.z = i;
-				scene.add(wall);
-			}
-
-			if(((i+1) < MAZESIZE)
-				&& (grid[j][i] != coordinates.S)
-				&& (grid[j][i+1] != coordinates.N)
-			)
-			{
-				geometry = new THREE.PlaneGeometry(0.5, 1);
-				var wall = new THREE.Mesh(geometry, material);
-				wall.rotation.z = 0.5 * Math.PI;
-				wall.position.x = j;
-				wall.position.y = 0.25;
-				wall.position.z = i + 0.5;
-				scene.add(wall);
-			}
-		}
 	}
 
 	var colored = 0xff0000;
@@ -145,6 +109,50 @@ function init()
 
 	document.body.appendChild(renderer.domElement);
 	render();
+}
+
+/**
+ * Generates walls interpreting the given grid's topology.
+ * @param  array two dimensional array containing the grid
+ */
+function generateWalls(grid)
+{
+	var material = new THREE.MeshBasicMaterial();
+	material.color.setHex(0x656565);
+	material.side = THREE.DoubleSide;
+
+	var geometry = new THREE.PlaneGeometry(1, 0.5);
+	var yPos = 0.25;
+	for(var i=0; i<MAZESIZE; i++)
+	{
+		for(var j=0; j<MAZESIZE; j++)
+		{
+			if(((j+1) < MAZESIZE)
+				&& (grid[j][i] != coordinates.E)
+				&& (grid[j+1][i] != coordinates.W)
+			)
+			{
+				var wall = new THREE.Mesh(geometry, material);
+				wall.rotation.y = 0.5 * Math.PI;
+				wall.position.y = yPos;
+				wall.position.x = j + 0.5;
+				wall.position.z = i;
+				scene.add(wall);
+			}
+
+			if(((i+1) < MAZESIZE)
+				&& (grid[j][i] != coordinates.S)
+				&& (grid[j][i+1] != coordinates.N)
+			)
+			{
+				var wall = new THREE.Mesh(geometry, material);
+				wall.position.x = j;
+				wall.position.y = yPos;
+				wall.position.z = i + 0.5;
+				scene.add(wall);
+			}
+		}
+	}
 }
 
 /**
