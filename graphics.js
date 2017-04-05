@@ -64,6 +64,15 @@ function init()
 
 	generateWalls(grid);
 
+	var floorGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
+	var floorMaterial = new THREE.MeshBasicMaterial();
+	floorMaterial.color.setHex(0xD3D3D3);
+	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	floor.rotation.x = -0.5 * Math.PI;
+	floor.position.x = MAZESIZE/2 - 0.5;
+	floor.position.z = MAZESIZE/2 - 0.5;
+	scene.add(floor);
+
 	document.body.appendChild(renderer.domElement);
 	render();
 }
