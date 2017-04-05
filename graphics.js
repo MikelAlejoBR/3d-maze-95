@@ -73,6 +73,16 @@ function init()
 	floor.position.z = MAZESIZE/2 - 0.5;
 	scene.add(floor);
 
+	var ceilingGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
+	var ceilingMaterial = new THREE.MeshBasicMaterial();
+	ceilingMaterial.color.setHex(0xD3D3D3);
+	var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+	ceiling.rotation.x = 0.5 * Math.PI;
+	ceiling.position.x = MAZESIZE/2 - 0.5;
+	ceiling.position.y = 0.5;
+	ceiling.position.z = MAZESIZE/2 - 0.5;
+	scene.add(ceiling);
+
 	document.body.appendChild(renderer.domElement);
 	render();
 }
