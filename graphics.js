@@ -83,8 +83,56 @@ function init()
 	ceiling.position.z = MAZESIZE/2 - 0.5;
 	scene.add(ceiling);
 
+	generateSurroundingWalls(MAZESIZE);
+
 	document.body.appendChild(renderer.domElement);
 	render();
+}
+
+/**
+ * Generates the external walls that surround the maze.
+ * @param  int MAZESIZE size of the maze
+ */
+function generateSurroundingWalls(MAZESIZE)
+{
+	var wallGeometry = new THREE.PlaneGeometry(MAZESIZE, 0.5);
+	var eWallMaterial = new THREE.MeshBasicMaterial();
+	eWallMaterial.color.setHex(0xD3D3D3);
+
+	/**
+	 * In order to correctly locate which wall belongs to each side of the
+	 * square, the axises must be seen like in the following example:
+	 *
+	 *                Z axis
+	 *                   \
+	 *                   \
+	 *                   \
+	 *                   \
+	 *  X axis __________\
+	 */
+
+	// South wall
+	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
+	externalWall.position.set((MAZESIZE/2 - 0.5), 0.25, -0.5);
+	scene.add(externalWall);
+
+	// West wall
+	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
+	externalWall.rotation.y = Math.PI * -0.5;
+	externalWall.position.set(MAZESIZE - 0.5, 0.25, MAZESIZE/2 - 0.5);
+	scene.add(externalWall);
+
+	// North wall
+	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
+	externalWall.rotation.y = Math.PI;
+	externalWall.position.set(MAZESIZE/2 - 0.5, 0.25, MAZESIZE - 0.5);
+	scene.add(externalWall);
+
+	// East wall
+	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
+	externalWall.rotation.y = Math.PI * 0.5;
+	externalWall.position.set(-0.5, 0.25, MAZESIZE/2 - 0.5);
+	scene.add(externalWall);
 }
 
 /**
