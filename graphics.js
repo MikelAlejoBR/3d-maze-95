@@ -24,41 +24,8 @@ function init()
 
 	controlCamera = new THREE.OrbitControls(camera);
 
-	/**
-	 * Global axis creation
-	 *
-	 * We create two points a and b in order to
-	 * draw the line
-	 */
-	var material_redline = new THREE.LineBasicMaterial({color: 0xff0000});
-	var material_blueline = new THREE.LineBasicMaterial({color: 0x0000ff});
-	var material_greenline = new THREE.LineBasicMaterial({color: 0x00ff00});
-
-	/**
-	 * Creation of vertices
-	 */
-	var geometry = new THREE.Geometry();
-	geometry.vertices.push(	new THREE.Vector3(0, 0, 0),
-							new THREE.Vector3(100, 0, 0)
-	);
-	var axisX = new THREE.Line(geometry, material_redline);
-
-	geometry = new THREE.Geometry();
-	geometry.vertices.push(	new THREE.Vector3(0, 0, 0),
-							new THREE.Vector3(0, 100, 0)
-	);
-	var axisY = new THREE.Line(geometry, material_greenline);
-
-	geometry = new THREE.Geometry();
-	geometry.vertices.push(	new THREE.Vector3(0, 0, 0),
-							new THREE.Vector3(0, 0, 100)
-	);
-
-	var axisZ = new THREE.Line(geometry, material_blueline);
-
-	scene.add(axisX);
-	scene.add(axisY);
-	scene.add(axisZ);
+	var axisHelper = new THREE.AxisHelper(10);
+	scene.add(axisHelper);
 
 	var grid = generateMaze(MAZESIZE, MAZESIZE);
 
