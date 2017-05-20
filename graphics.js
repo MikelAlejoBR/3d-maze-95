@@ -62,6 +62,130 @@ function init()
 
 	var grid = generateMaze(MAZESIZE, MAZESIZE);
 
+	generateWalls(grid);
+
+	var floorGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
+	var floorMaterial = new THREE.MeshBasicMaterial();
+	floorMaterial.color.setHex(0xD3D3D3);
+	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	floor.rotation.x = -0.5 * Math.PI;
+	floor.position.x = MAZESIZE/2 - 0.5;
+	floor.position.z = MAZESIZE/2 - 0.5;
+	scene.add(floor);
+
+	var ceilingGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
+	var ceilingMaterial = new THREE.MeshBasicMaterial();
+	ceilingMaterial.color.setHex(0xD3D3D3);
+	var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+	ceiling.rotation.x = 0.5 * Math.PI;
+	ceiling.position.x = MAZESIZE/2 - 0.5;
+	ceiling.position.y = 0.5;
+	ceiling.position.z = MAZESIZE/2 - 0.5;
+	scene.add(ceiling);
+
+	generateSurroundingWalls(MAZESIZE);
+
+	document.body.appendChild(renderer.domElement);
+	render();
+}
+
+/**
+ * Generates the external walls that surround the maze.
+ * @param  int MAZESIZE size of the maze
+ */
+function generateSurroundingWalls(MAZESIZE)
+{
+	var wallGeometry = new THREE.PlaneGeometry(MAZESIZE, 0.5);
+	var eWallMaterial = new THREE.MeshBasicMaterial();
+	eWallMaterial.color.setHex(0xD3D3D3);
+
+	/**
+	 * In order to correctly locate which wall belongs to each side of the
+	 * square, the axises must be seen like in the following example:
+	 *
+	 *                Z axis
+	 *                   \
+	 *                   \
+	 *                   \
+	 *                   \
+	 *  X axis __________\
+	 */
+
+	// South wall
+	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
+	externalWall.position.set((MAZESIZE/2 - 0.5), 0.25, -0.5);
+	scene.add(externalWall);
+
+	// West wall
+	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
+	externalWall.rotation.y = Math.PI * -0.5;
+	externalWall.position.set(MAZESIZE - 0.5, 0.25, MAZESIZE/2 - 0.5);
+	scene.add(externalWall);
+
+	// North wall
+	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
+	externalWall.rotation.y = Math.PI;
+	externalWall.position.set(MAZESIZE/2 - 0.5, 0.25, MAZESIZE - 0.5);
+	scene.add(externalWall);
+
+	// East wall
+	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
+	externalWall.rotation.y = Math.PI * 0.5;
+	externalWall.position.set(-0.5, 0.25, MAZESIZE/2 - 0.5);
+	scene.add(externalWall);
+}
+
+/**
+ * Generates walls interpreting the given grid's topology.
+ * @param  array two dimensional array containing the grid
+ */
+function generateWalls(grid)
+{
+	var material = new THREE.MeshBasicMaterial();
+	material.color.setHex(0x656565);
+	material.side = THREE.DoubleSide;
+
+	var geometry = new THREE.PlaneGeometry(1, 0.5);
+	var yPos = 0.25;
+	for(var i=0; i<MAZESIZE; i++)
+	{
+		for(var j=0; j<MAZESIZE; j++)
+		{
+			if(((j+1) < MAZESIZE)
+				&& (grid[j][i] != coordinates.E)
+				&& (grid[j+1][i] != coordinates.W)
+			)
+			{
+				var wall = new THREE.Mesh(geometry, material);
+				wall.rotation.y = 0.5 * Math.PI;
+				wall.position.y = yPos;
+				wall.position.x = j + 0.5;
+				wall.position.z = i;
+				scene.add(wall);
+			}
+
+			if(((i+1) < MAZESIZE)
+				&& (grid[j][i] != coordinates.S)
+				&& (grid[j][i+1] != coordinates.N)
+			)
+			{
+				var wall = new THREE.Mesh(geometry, material);
+				wall.position.x = j;
+				wall.position.y = yPos;
+				wall.position.z = i + 0.5;
+				scene.add(wall);
+			}
+		}
+	}
+}
+
+/**
+ * Generates and places in the scene a colored square for each cell of the
+ * given grid
+ * @param  array two dimensional array containing the grid
+ */
+function generateColoredSquares(grid)
+{
 	var coordinates = {
 		N: 1,
 		E: 2,
@@ -104,9 +228,6 @@ function init()
 			scene.add(square);
 		}
 	}
-
-	document.body.appendChild(renderer.domElement);
-	render();
 }
 
 /**
