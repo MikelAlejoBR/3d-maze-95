@@ -17,9 +17,7 @@ function init()
 										1000
 	);
 
-	camera.position.x = -30;
-	camera.position.y = 30;
-	camera.position.z = -30;
+	camera.position.set(-30, 30, -30);
 	camera.lookAt(scene.position);
 
 	controlCamera = new THREE.OrbitControls(camera);
@@ -36,8 +34,7 @@ function init()
 	floorMaterial.color.setHex(0xD3D3D3);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.rotation.x = -0.5 * Math.PI;
-	floor.position.x = MAZESIZE/2 - 0.5;
-	floor.position.z = MAZESIZE/2 - 0.5;
+	floor.position.set(MAZESIZE/2 - 0.5, 0, MAZESIZE/2 - 0.5);
 	scene.add(floor);
 
 	var ceilingGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
@@ -45,9 +42,7 @@ function init()
 	ceilingMaterial.color.setHex(0xD3D3D3);
 	var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
 	ceiling.rotation.x = 0.5 * Math.PI;
-	ceiling.position.x = MAZESIZE/2 - 0.5;
-	ceiling.position.y = 0.5;
-	ceiling.position.z = MAZESIZE/2 - 0.5;
+	ceiling.position.set(MAZESIZE/2 - 0.5, 0.5, MAZESIZE/2 - 0.5);
 	scene.add(ceiling);
 
 	generateSurroundingWalls(MAZESIZE);
@@ -125,9 +120,7 @@ function generateWalls(grid)
 			{
 				var wall = new THREE.Mesh(geometry, material);
 				wall.rotation.y = 0.5 * Math.PI;
-				wall.position.y = yPos;
-				wall.position.x = j + 0.5;
-				wall.position.z = i;
+				wall.position.set(j + 0.5, yPos, i);
 				scene.add(wall);
 			}
 
@@ -137,9 +130,7 @@ function generateWalls(grid)
 			)
 			{
 				var wall = new THREE.Mesh(geometry, material);
-				wall.position.x = j;
-				wall.position.y = yPos;
-				wall.position.z = i + 0.5;
+				wall.position.set(j, yPos, i + 0.5);
 				scene.add(wall);
 			}
 		}
@@ -189,9 +180,7 @@ function generateColoredSquares(grid)
 			material.side = THREE.DoubleSide;
 			var square = new THREE.Mesh(geometry, material);
 			square.rotation.x = 0.5 * Math.PI;
-			square.position.x = j;
-			square.position.y = 0;
-			square.position.z = i;
+			square.position.set(j, 0, i);
 			scene.add(square);
 		}
 	}
