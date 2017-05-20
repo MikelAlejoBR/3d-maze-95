@@ -11,6 +11,10 @@ function init()
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
+
+	/*
+	// Overview camera. Code is left just in case a general overview of the
+	// maze is needed.
 	camera = new THREE.PerspectiveCamera(45,
 										window.innerWidth / window.innerHeight,
 										0.1,
@@ -19,13 +23,33 @@ function init()
 
 	camera.position.set(-30, 30, -30);
 	camera.lookAt(scene.position);
-
 	controlCamera = new THREE.OrbitControls(camera);
+	*/
+
 
 	var axisHelper = new THREE.AxisHelper(10);
 	scene.add(axisHelper);
 
 	var grid = generateMaze(MAZESIZE, MAZESIZE);
+
+	camera = new THREE.PerspectiveCamera(45,
+										 window.innerWidth / window.innerHeight,
+										 0.1,
+										 1000
+	);
+	camera.position.set(0, 0.25, 0);
+
+	// The camera is placed pointing to the nearest open path from the
+	// initial position. Check mazeGenerator.js for the reference of
+	// "coordinates".
+	if(grid[1][0] == coordinates.W)
+	{
+		camera.lookAt(new THREE.Vector3(1, 0.25, 0));
+	}
+	else
+	{
+		camera.lookAt(new THREE.Vector3(0, 0.25, 1));
+	}
 
 	generateWalls(grid);
 
@@ -124,7 +148,7 @@ function generateWalls(grid)
 	var geometry = new THREE.PlaneGeometry(1, 0.5);
 	var yPos = 0.25;
 	var halfPi = Math.PI * 0.5;
-	
+
 	for(var i=0; i<MAZESIZE; i++)
 	{
 		for(var j=0; j<MAZESIZE; j++)
