@@ -47,14 +47,17 @@ function generateCeilingFloor(MAZESIZE)
 	var planeMaterial = new THREE.MeshBasicMaterial();
 	planeMaterial.color.setHex(0xD3D3D3);
 
+	var middlePos = MAZESIZE/2 - 0.5;
+	var halfPi = Math.PI * 0.5;
+
 	var floor = new THREE.Mesh(planeGeometry, planeMaterial);
-	floor.rotation.x = -0.5 * Math.PI;
-	floor.position.set(MAZESIZE/2 - 0.5, 0, MAZESIZE/2 - 0.5);
+	floor.rotation.x = -halfPi;
+	floor.position.set(middlePos, 0, middlePos);
 	scene.add(floor);
 
 	var ceiling = new THREE.Mesh(planeGeometry, planeMaterial);
-	ceiling.rotation.x = 0.5 * Math.PI;
-	ceiling.position.set(MAZESIZE/2 - 0.5, 0.5, MAZESIZE/2 - 0.5);
+	ceiling.rotation.x = halfPi;
+	ceiling.position.set(middlePos, 0.5, middlePos);
 	scene.add(ceiling);
 }
 
@@ -80,27 +83,31 @@ function generateSurroundingWalls(MAZESIZE)
 	 *  X axis __________\
 	 */
 
+	var middlePos = MAZESIZE/2 - 0.5;
+	var limitPos = MAZESIZE - 0.5;
+	var halfPi = Math.PI * 0.5;
+
 	// South wall
 	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
-	externalWall.position.set((MAZESIZE/2 - 0.5), 0.25, -0.5);
+	externalWall.position.set(middlePos, 0.25, -0.5);
 	scene.add(externalWall);
 
 	// West wall
 	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
-	externalWall.rotation.y = Math.PI * -0.5;
-	externalWall.position.set(MAZESIZE - 0.5, 0.25, MAZESIZE/2 - 0.5);
+	externalWall.rotation.y = -halfPi;
+	externalWall.position.set(limitPos, 0.25, middlePos);
 	scene.add(externalWall);
 
 	// North wall
 	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
 	externalWall.rotation.y = Math.PI;
-	externalWall.position.set(MAZESIZE/2 - 0.5, 0.25, MAZESIZE - 0.5);
+	externalWall.position.set(middlePos, 0.25, limitPos);
 	scene.add(externalWall);
 
 	// East wall
 	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
-	externalWall.rotation.y = Math.PI * 0.5;
-	externalWall.position.set(-0.5, 0.25, MAZESIZE/2 - 0.5);
+	externalWall.rotation.y = halfPi;
+	externalWall.position.set(-0.5, 0.25, middlePos);
 	scene.add(externalWall);
 }
 
@@ -116,6 +123,8 @@ function generateWalls(grid)
 
 	var geometry = new THREE.PlaneGeometry(1, 0.5);
 	var yPos = 0.25;
+	var halfPi = Math.PI * 0.5;
+	
 	for(var i=0; i<MAZESIZE; i++)
 	{
 		for(var j=0; j<MAZESIZE; j++)
@@ -126,7 +135,7 @@ function generateWalls(grid)
 			)
 			{
 				var wall = new THREE.Mesh(geometry, material);
-				wall.rotation.y = 0.5 * Math.PI;
+				wall.rotation.y = halfPi;
 				wall.position.set(j + 0.5, yPos, i);
 				scene.add(wall);
 			}
@@ -163,6 +172,8 @@ function generateColoredSquares(grid)
 	var colorgreen = 0x00ff00;
 	var colorgray = 0xD3D3D3;
 
+	var halfPi = Math.PI * 0.5;
+
 	for(var i=0; i<MAZESIZE; i++)
 	{
 		for(var j=0; j<MAZESIZE; j++)
@@ -186,7 +197,7 @@ function generateColoredSquares(grid)
 			}
 			material.side = THREE.DoubleSide;
 			var square = new THREE.Mesh(geometry, material);
-			square.rotation.x = 0.5 * Math.PI;
+			square.rotation.x = halfPi;
 			square.position.set(j, 0, i);
 			scene.add(square);
 		}
