@@ -29,26 +29,33 @@ function init()
 
 	generateWalls(grid);
 
-	var floorGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
-	var floorMaterial = new THREE.MeshBasicMaterial();
-	floorMaterial.color.setHex(0xD3D3D3);
-	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-	floor.rotation.x = -0.5 * Math.PI;
-	floor.position.set(MAZESIZE/2 - 0.5, 0, MAZESIZE/2 - 0.5);
-	scene.add(floor);
-
-	var ceilingGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
-	var ceilingMaterial = new THREE.MeshBasicMaterial();
-	ceilingMaterial.color.setHex(0xD3D3D3);
-	var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
-	ceiling.rotation.x = 0.5 * Math.PI;
-	ceiling.position.set(MAZESIZE/2 - 0.5, 0.5, MAZESIZE/2 - 0.5);
-	scene.add(ceiling);
+	generateCeilingFloor(MAZESIZE);
 
 	generateSurroundingWalls(MAZESIZE);
 
 	document.body.appendChild(renderer.domElement);
 	render();
+}
+
+/**
+ * Generates the floor and the ceiling of the maze.
+ * @param  int MAZESIZE size of the maze
+ */
+function generateCeilingFloor(MAZESIZE)
+{
+	var planeGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
+	var planeMaterial = new THREE.MeshBasicMaterial();
+	planeMaterial.color.setHex(0xD3D3D3);
+
+	var floor = new THREE.Mesh(planeGeometry, planeMaterial);
+	floor.rotation.x = -0.5 * Math.PI;
+	floor.position.set(MAZESIZE/2 - 0.5, 0, MAZESIZE/2 - 0.5);
+	scene.add(floor);
+
+	var ceiling = new THREE.Mesh(planeGeometry, planeMaterial);
+	ceiling.rotation.x = 0.5 * Math.PI;
+	ceiling.position.set(MAZESIZE/2 - 0.5, 0.5, MAZESIZE/2 - 0.5);
+	scene.add(ceiling);
 }
 
 /**
