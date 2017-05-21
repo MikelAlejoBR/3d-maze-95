@@ -1,6 +1,7 @@
 var renderer;
 var scene;
 var camera;
+var keyboard = new THREEx.KeyboardState();
 
 const MAZESIZE = 10;
 var entryPoint = [0, 0]; // X and Z COORDINATES respectively.
@@ -11,82 +12,78 @@ function init()
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
+
+/*
+	// Overview camera. Code is left just in case a general overview of the
+	// maze is needed.
 	camera = new THREE.PerspectiveCamera(45,
 										window.innerWidth / window.innerHeight,
 										0.1,
 										1000
 	);
 
-	camera.position.x = -30;
-	camera.position.y = 30;
-	camera.position.z = -30;
+	camera.position.set(-30, 30, -30);
 	camera.lookAt(scene.position);
-
 	controlCamera = new THREE.OrbitControls(camera);
 
-	/**
-	 * Global axis creation
-	 *
-	 * We create two points a and b in order to
-	 * draw the line
-	 */
-	var material_redline = new THREE.LineBasicMaterial({color: 0xff0000});
-	var material_blueline = new THREE.LineBasicMaterial({color: 0x0000ff});
-	var material_greenline = new THREE.LineBasicMaterial({color: 0x00ff00});
+*/
 
-	/**
-	 * Creation of vertices
-	 */
-	var geometry = new THREE.Geometry();
-	geometry.vertices.push(	new THREE.Vector3(0, 0, 0),
-							new THREE.Vector3(100, 0, 0)
-	);
-	var axisX = new THREE.Line(geometry, material_redline);
-
-	geometry = new THREE.Geometry();
-	geometry.vertices.push(	new THREE.Vector3(0, 0, 0),
-							new THREE.Vector3(0, 100, 0)
-	);
-	var axisY = new THREE.Line(geometry, material_greenline);
-
-	geometry = new THREE.Geometry();
-	geometry.vertices.push(	new THREE.Vector3(0, 0, 0),
-							new THREE.Vector3(0, 0, 100)
-	);
-
-	var axisZ = new THREE.Line(geometry, material_blueline);
-
-	scene.add(axisX);
-	scene.add(axisY);
-	scene.add(axisZ);
+	var axisHelper = new THREE.AxisHelper(10);
+	scene.add(axisHelper);
 
 	var grid = generateMaze(MAZESIZE, MAZESIZE);
 
+	camera = new THREE.PerspectiveCamera(45,
+										 window.innerWidth / window.innerHeight,
+										 0.1,
+										 1000
+	);
+	camera.position.set(0, 0.25, 0);
+
+	// The camera is placed pointing to the nearest open path from the
+	// initial position. Check mazeGenerator.js for the reference of
+	// "coordinates".
+	if(grid[1][0] == coordinates.W)
+	{
+		camera.lookAt(new THREE.Vector3(1, 0.25, 0));
+	}
+	else
+	{
+		camera.lookAt(new THREE.Vector3(0, 0.25, 1));
+	}
+
 	generateWalls(grid);
 
-	var floorGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
-	var floorMaterial = new THREE.MeshBasicMaterial();
-	floorMaterial.color.setHex(0xD3D3D3);
-	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-	floor.rotation.x = -0.5 * Math.PI;
-	floor.position.x = MAZESIZE/2 - 0.5;
-	floor.position.z = MAZESIZE/2 - 0.5;
-	scene.add(floor);
-
-	var ceilingGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
-	var ceilingMaterial = new THREE.MeshBasicMaterial();
-	ceilingMaterial.color.setHex(0xD3D3D3);
-	var ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
-	ceiling.rotation.x = 0.5 * Math.PI;
-	ceiling.position.x = MAZESIZE/2 - 0.5;
-	ceiling.position.y = 0.5;
-	ceiling.position.z = MAZESIZE/2 - 0.5;
-	scene.add(ceiling);
+	generateCeilingFloor(MAZESIZE);
 
 	generateSurroundingWalls(MAZESIZE);
 
 	document.body.appendChild(renderer.domElement);
 	render();
+}
+
+/**
+ * Generates the floor and the ceiling of the maze.
+ * @param  int MAZESIZE size of the maze
+ */
+function generateCeilingFloor(MAZESIZE)
+{
+	var planeGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
+	var planeMaterial = new THREE.MeshBasicMaterial();
+	planeMaterial.color.setHex(0xD3D3D3);
+
+	var middlePos = MAZESIZE/2 - 0.5;
+	var halfPi = Math.PI * 0.5;
+
+	var floor = new THREE.Mesh(planeGeometry, planeMaterial);
+	floor.rotation.x = -halfPi;
+	floor.position.set(middlePos, 0, middlePos);
+	scene.add(floor);
+
+	var ceiling = new THREE.Mesh(planeGeometry, planeMaterial);
+	ceiling.rotation.x = halfPi;
+	ceiling.position.set(middlePos, 0.5, middlePos);
+	scene.add(ceiling);
 }
 
 /**
@@ -111,27 +108,31 @@ function generateSurroundingWalls(MAZESIZE)
 	 *  X axis __________\
 	 */
 
+	var middlePos = MAZESIZE/2 - 0.5;
+	var limitPos = MAZESIZE - 0.5;
+	var halfPi = Math.PI * 0.5;
+
 	// South wall
 	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
-	externalWall.position.set((MAZESIZE/2 - 0.5), 0.25, -0.5);
+	externalWall.position.set(middlePos, 0.25, -0.5);
 	scene.add(externalWall);
 
 	// West wall
 	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
-	externalWall.rotation.y = Math.PI * -0.5;
-	externalWall.position.set(MAZESIZE - 0.5, 0.25, MAZESIZE/2 - 0.5);
+	externalWall.rotation.y = -halfPi;
+	externalWall.position.set(limitPos, 0.25, middlePos);
 	scene.add(externalWall);
 
 	// North wall
 	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
 	externalWall.rotation.y = Math.PI;
-	externalWall.position.set(MAZESIZE/2 - 0.5, 0.25, MAZESIZE - 0.5);
+	externalWall.position.set(middlePos, 0.25, limitPos);
 	scene.add(externalWall);
 
 	// East wall
 	var externalWall = new THREE.Mesh(wallGeometry, eWallMaterial);
-	externalWall.rotation.y = Math.PI * 0.5;
-	externalWall.position.set(-0.5, 0.25, MAZESIZE/2 - 0.5);
+	externalWall.rotation.y = halfPi;
+	externalWall.position.set(-0.5, 0.25, middlePos);
 	scene.add(externalWall);
 }
 
@@ -147,6 +148,8 @@ function generateWalls(grid)
 
 	var geometry = new THREE.PlaneGeometry(1, 0.5);
 	var yPos = 0.25;
+	var halfPi = Math.PI * 0.5;
+
 	for(var i=0; i<MAZESIZE; i++)
 	{
 		for(var j=0; j<MAZESIZE; j++)
@@ -157,10 +160,8 @@ function generateWalls(grid)
 			)
 			{
 				var wall = new THREE.Mesh(geometry, material);
-				wall.rotation.y = 0.5 * Math.PI;
-				wall.position.y = yPos;
-				wall.position.x = j + 0.5;
-				wall.position.z = i;
+				wall.rotation.y = halfPi;
+				wall.position.set(j + 0.5, yPos, i);
 				scene.add(wall);
 			}
 
@@ -170,12 +171,35 @@ function generateWalls(grid)
 			)
 			{
 				var wall = new THREE.Mesh(geometry, material);
-				wall.position.x = j;
-				wall.position.y = yPos;
-				wall.position.z = i + 0.5;
+				wall.position.set(j, yPos, i + 0.5);
 				scene.add(wall);
 			}
 		}
+	}
+}
+
+/**
+ * Checks whether any movement keys have been pressed, and if so, it changes
+ * the position and rotation of the camera.
+ */
+function keyboardCheck()
+{
+	var movementSpeed = 0.02;
+	var rotationSpeed = 0.03;
+
+	if(keyboard.pressed('w') || keyboard.pressed('up'))
+	{
+		camera.translateZ(-movementSpeed);
+	}
+
+	if(keyboard.pressed('a') || keyboard.pressed('left'))
+	{
+		camera.rotateY(rotationSpeed);
+	}
+
+	if(keyboard.pressed('d') || keyboard.pressed('right'))
+	{
+		camera.rotateY(-rotationSpeed);
 	}
 }
 
@@ -197,6 +221,8 @@ function generateColoredSquares(grid)
 	var colorblue = 0x0000ff;
 	var colorgreen = 0x00ff00;
 	var colorgray = 0xD3D3D3;
+
+	var halfPi = Math.PI * 0.5;
 
 	for(var i=0; i<MAZESIZE; i++)
 	{
@@ -221,10 +247,8 @@ function generateColoredSquares(grid)
 			}
 			material.side = THREE.DoubleSide;
 			var square = new THREE.Mesh(geometry, material);
-			square.rotation.x = 0.5 * Math.PI;
-			square.position.x = j;
-			square.position.y = 0;
-			square.position.z = i;
+			square.rotation.x = halfPi;
+			square.position.set(j, 0, i);
 			scene.add(square);
 		}
 	}
@@ -235,6 +259,7 @@ function generateColoredSquares(grid)
  */
 function render()
 {
+	keyboardCheck();
 	requestAnimationFrame(render);
 	renderer.render(scene, camera);
 }
