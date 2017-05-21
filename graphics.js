@@ -3,6 +3,8 @@ var scene;
 var camera;
 var keyboard = new THREEx.KeyboardState();
 
+var collidableObjects = [];
+
 const MAZESIZE = 10;
 var entryPoint = [0, 0]; // X and Z COORDINATES respectively.
 
@@ -57,6 +59,13 @@ function init()
 	generateCeilingFloor(MAZESIZE);
 
 	generateSurroundingWalls(MAZESIZE);
+
+	var finSphereGeo = new THREE.SphereGeometry(0.25, 10);
+	var finSphereMat = new THREE.MeshBasicMaterial({color: 0x0000ff});
+	var finishSphere = new THREE.Mesh(finSphereGeo, finSphereMat);
+	finishSphere.position.set(MAZESIZE - 1, 0.25, MAZESIZE - 1);
+	scene.add(finishSphere);
+	collidableObjects.push(finishSphere);
 
 	document.body.appendChild(renderer.domElement);
 	render();
@@ -204,6 +213,32 @@ function keyboardCheck()
 }
 
 /**
+ * Checks whether the camera is in front of the finish sphere. If it is, it
+ * forces a page reload
+ */
+function finishCheck()
+{
+	// This code was possible thanks to stemkoski's example[1] and
+	// WestLangley's explanation[2].
+	// [1] http://stemkoski.github.io/Three.js/Collision-Detection.html
+	// [2] http://stackoverflow.com/a/14816480/6319771
+	var directionVector = new THREE.Vector3();
+	camera.getWorldDirection(directionVector);
+
+	var ray = new THREE.Raycaster(camera.position.clone(),
+								  directionVector.clone().normalize(),
+								  0,
+								  0.2
+	);
+	var collisionResults = ray.intersectObjects(collidableObjects);
+	if (collisionResults.length > 0
+		&& collisionResults[0].distance < directionVector.length())
+	{
+		location.reload();
+	}
+}
+
+/**
  * Generates and places in the scene a colored square for each cell of the
  * given grid
  * @param  array two dimensional array containing the grid
@@ -262,6 +297,10 @@ function render()
 	keyboardCheck();
 	requestAnimationFrame(render);
 	renderer.render(scene, camera);
+	// The function below must go after requestAnimationFrame and
+	// renderer.render, as otherwise will register an initial hit before
+	// the maze loads, resulting in an infinite page reload loop
+	finishCheck();
 }
 
 /**
