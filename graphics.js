@@ -1,6 +1,7 @@
 var renderer;
 var scene;
 var camera;
+var keyboard = new THREEx.KeyboardState();
 
 const MAZESIZE = 10;
 var entryPoint = [0, 0]; // X and Z COORDINATES respectively.
@@ -12,7 +13,7 @@ function init()
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
 
-	/*
+/*
 	// Overview camera. Code is left just in case a general overview of the
 	// maze is needed.
 	camera = new THREE.PerspectiveCamera(45,
@@ -24,8 +25,8 @@ function init()
 	camera.position.set(-30, 30, -30);
 	camera.lookAt(scene.position);
 	controlCamera = new THREE.OrbitControls(camera);
-	*/
 
+*/
 
 	var axisHelper = new THREE.AxisHelper(10);
 	scene.add(axisHelper);
@@ -178,6 +179,31 @@ function generateWalls(grid)
 }
 
 /**
+ * Checks whether any movement keys have been pressed, and if so, it changes
+ * the position and rotation of the camera.
+ */
+function keyboardCheck()
+{
+	var movementSpeed = 0.02;
+	var rotationSpeed = 0.03;
+
+	if(keyboard.pressed('w') || keyboard.pressed('up'))
+	{
+		camera.translateZ(-movementSpeed);
+	}
+
+	if(keyboard.pressed('a') || keyboard.pressed('left'))
+	{
+		camera.rotateY(rotationSpeed);
+	}
+
+	if(keyboard.pressed('d') || keyboard.pressed('right'))
+	{
+		camera.rotateY(-rotationSpeed);
+	}
+}
+
+/**
  * Generates and places in the scene a colored square for each cell of the
  * given grid
  * @param  array two dimensional array containing the grid
@@ -233,6 +259,7 @@ function generateColoredSquares(grid)
  */
 function render()
 {
+	keyboardCheck();
 	requestAnimationFrame(render);
 	renderer.render(scene, camera);
 }
