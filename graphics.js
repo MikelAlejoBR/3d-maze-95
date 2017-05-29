@@ -60,12 +60,18 @@ function init()
 
 	generateSurroundingWalls(MAZESIZE);
 
-	var finSphereGeo = new THREE.SphereGeometry(0.25, 10);
-	var finSphereMat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-	var finishSphere = new THREE.Mesh(finSphereGeo, finSphereMat);
-	finishSphere.position.set(MAZESIZE - 1, 0.25, MAZESIZE - 1);
-	scene.add(finishSphere);
-	collidableObjects.push(finishSphere);
+	var finBoxGeo = new THREE.BoxGeometry(0.25, 0.25, 0.25);
+	var finBoxMat = new THREE.MeshBasicMaterial({color: 0xffffff});
+	var finBoxTex = loadTexture("textures/finish.png");
+	finBoxTex.wrapS = THREE.RepeatWrapping;
+	finBoxTex.wrapT = THREE.RepeatWrapping;
+
+	finBoxMat.map = finBoxTex;
+
+	var finishBox = new THREE.Mesh(finBoxGeo, finBoxMat);
+	finishBox.position.set(MAZESIZE - 1, 0.25, MAZESIZE - 1);
+	scene.add(finishBox);
+	collidableObjects.push(finishBox);
 
 	document.body.appendChild(renderer.domElement);
 	render();
@@ -78,18 +84,36 @@ function init()
 function generateCeilingFloor(MAZESIZE)
 {
 	var planeGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
-	var planeMaterial = new THREE.MeshBasicMaterial();
-	planeMaterial.color.setHex(0xD3D3D3);
 
 	var middlePos = MAZESIZE/2 - 0.5;
 	var halfPi = Math.PI * 0.5;
 
-	var floor = new THREE.Mesh(planeGeometry, planeMaterial);
+	var floorMaterial = new THREE.MeshBasicMaterial();
+	var floorTexture = loadTexture("textures/grassTexture.jpg");
+	floorTexture.wrapS = THREE.RepeatWrapping;
+	floorTexture.wrapT = THREE.RepeatWrapping;
+	floorTexture.repeat.x = 25;
+	floorTexture.repeat.y = 25;
+
+	floorMaterial.color.setHex(0xD3D3D3);
+	floorMaterial.map = floorTexture;
+
+	var floor = new THREE.Mesh(planeGeometry, floorMaterial);
 	floor.rotation.x = -halfPi;
 	floor.position.set(middlePos, 0, middlePos);
 	scene.add(floor);
 
-	var ceiling = new THREE.Mesh(planeGeometry, planeMaterial);
+	var ceilingMaterial = new THREE.MeshBasicMaterial();
+	var ceilingTexture = loadTexture("textures/cementTexture.png");
+	ceilingTexture.wrapS = THREE.RepeatWrapping;
+	ceilingTexture.wrapT = THREE.RepeatWrapping;
+	ceilingTexture.repeat.x = 5;
+	ceilingTexture.repeat.y = 5;
+
+	ceilingMaterial.color.setHex(0xD3D3D3);
+	ceilingMaterial.map = ceilingTexture;
+
+	var ceiling = new THREE.Mesh(planeGeometry, ceilingMaterial);
 	ceiling.rotation.x = halfPi;
 	ceiling.position.set(middlePos, 0.5, middlePos);
 	scene.add(ceiling);
@@ -103,7 +127,15 @@ function generateSurroundingWalls(MAZESIZE)
 {
 	var wallGeometry = new THREE.PlaneGeometry(MAZESIZE, 0.5);
 	var eWallMaterial = new THREE.MeshBasicMaterial();
+
+	var wallTexture = loadTexture("textures/wallPattern.jpg");
+	wallTexture.wrapS = THREE.RepeatWrapping;
+	wallTexture.wrapT = THREE.RepeatWrapping;
+	wallTexture.repeat.x = 25;
+	wallTexture.repeat.y = 1;
+
 	eWallMaterial.color.setHex(0xD3D3D3);
+	eWallMaterial.map = wallTexture;
 
 	/**
 	 * In order to correctly locate which wall belongs to each side of the
@@ -152,7 +184,15 @@ function generateSurroundingWalls(MAZESIZE)
 function generateWalls(grid)
 {
 	var material = new THREE.MeshBasicMaterial();
+
+	var wallTexture = loadTexture("textures/wallPattern.jpg");
+	wallTexture.wrapS = THREE.RepeatWrapping;
+	wallTexture.wrapT = THREE.RepeatWrapping;
+	wallTexture.repeat.x = 2;
+	wallTexture.repeat.y = 1;
+
 	material.color.setHex(0x656565);
+	material.map = wallTexture;
 	material.side = THREE.DoubleSide;
 
 	var geometry = new THREE.PlaneGeometry(1, 0.5);
@@ -236,6 +276,13 @@ function finishCheck()
 	{
 		location.reload();
 	}
+}
+
+function loadTexture(path)
+{
+	var loader = new THREE.TextureLoader();
+	var texture = loader.load(path);
+	return texture;
 }
 
 /**
