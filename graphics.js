@@ -30,9 +30,6 @@ function init()
 
 */
 
-	var axisHelper = new THREE.AxisHelper(10);
-	scene.add(axisHelper);
-
 	var grid = generateMaze(MAZESIZE, MAZESIZE);
 
 	camera = new THREE.PerspectiveCamera(45,
