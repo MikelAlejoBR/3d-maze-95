@@ -78,18 +78,29 @@ function init()
 function generateCeilingFloor(MAZESIZE)
 {
 	var planeGeometry = new THREE.PlaneGeometry(MAZESIZE, MAZESIZE);
-	var planeMaterial = new THREE.MeshBasicMaterial();
-	planeMaterial.color.setHex(0xD3D3D3);
 
 	var middlePos = MAZESIZE/2 - 0.5;
 	var halfPi = Math.PI * 0.5;
 
-	var floor = new THREE.Mesh(planeGeometry, planeMaterial);
+	var floorMaterial = new THREE.MeshBasicMaterial();
+	var floorTexture = loadTexture("textures/grassTexture.jpg");
+	floorTexture.wrapS = THREE.RepeatWrapping;
+	floorTexture.wrapT = THREE.RepeatWrapping;
+	floorTexture.repeat.x = 25;
+	floorTexture.repeat.y = 25;
+
+	floorMaterial.color.setHex(0xD3D3D3);
+	floorMaterial.map = floorTexture;
+
+	var floor = new THREE.Mesh(planeGeometry, floorMaterial);
 	floor.rotation.x = -halfPi;
 	floor.position.set(middlePos, 0, middlePos);
 	scene.add(floor);
 
-	var ceiling = new THREE.Mesh(planeGeometry, planeMaterial);
+	var ceilingMaterial = new THREE.MeshBasicMaterial();
+	ceilingMaterial.color.setHex(0xD3D3D3);
+
+	var ceiling = new THREE.Mesh(planeGeometry, ceilingMaterial);
 	ceiling.rotation.x = halfPi;
 	ceiling.position.set(middlePos, 0.5, middlePos);
 	scene.add(ceiling);

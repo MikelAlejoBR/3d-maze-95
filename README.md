@@ -9,3 +9,7 @@ idea of Windows 95's 3D maze screen saver.
     https://www.brusheezy.com/patterns/27411-brick-wall-patterns
   ) thanks to [Diana Dakin](
     https://www.brusheezy.com/members/dianascreations).
+
+- [Grass texture](
+    https://www.brusheezy.com/textures/20185-seamless-green-grass-textures
+  ) thanks to [Simon Murray](https://www.brusheezy.com/members/goodtextures).
