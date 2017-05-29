@@ -60,12 +60,12 @@ function init()
 
 	generateSurroundingWalls(MAZESIZE);
 
-	var finSphereGeo = new THREE.SphereGeometry(0.25, 10);
-	var finSphereMat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-	var finishSphere = new THREE.Mesh(finSphereGeo, finSphereMat);
-	finishSphere.position.set(MAZESIZE - 1, 0.25, MAZESIZE - 1);
-	scene.add(finishSphere);
-	collidableObjects.push(finishSphere);
+	var finBoxGeo = new THREE.BoxGeometry(0.25, 0.25, 0.25);
+	var finBoxMat = new THREE.MeshBasicMaterial({color: 0x0000ff});
+	var finishBox = new THREE.Mesh(finBoxGeo, finBoxMat);
+	finishBox.position.set(MAZESIZE - 1, 0.25, MAZESIZE - 1);
+	scene.add(finishBox);
+	collidableObjects.push(finishBox);
 
 	document.body.appendChild(renderer.domElement);
 	render();
