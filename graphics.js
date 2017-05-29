@@ -103,7 +103,15 @@ function generateSurroundingWalls(MAZESIZE)
 {
 	var wallGeometry = new THREE.PlaneGeometry(MAZESIZE, 0.5);
 	var eWallMaterial = new THREE.MeshBasicMaterial();
+
+	var wallTexture = loadTexture("textures/wallPattern.jpg");
+	wallTexture.wrapS = THREE.RepeatWrapping;
+	wallTexture.wrapT = THREE.RepeatWrapping;
+	wallTexture.repeat.x = 25;
+	wallTexture.repeat.y = 1;
+
 	eWallMaterial.color.setHex(0xD3D3D3);
+	eWallMaterial.map = wallTexture;
 
 	/**
 	 * In order to correctly locate which wall belongs to each side of the
@@ -152,7 +160,15 @@ function generateSurroundingWalls(MAZESIZE)
 function generateWalls(grid)
 {
 	var material = new THREE.MeshBasicMaterial();
+
+	var wallTexture = loadTexture("textures/wallPattern.jpg");
+	wallTexture.wrapS = THREE.RepeatWrapping;
+	wallTexture.wrapT = THREE.RepeatWrapping;
+	wallTexture.repeat.x = 2;
+	wallTexture.repeat.y = 1;
+
 	material.color.setHex(0x656565);
+	material.map = wallTexture;
 	material.side = THREE.DoubleSide;
 
 	var geometry = new THREE.PlaneGeometry(1, 0.5);
@@ -236,6 +252,13 @@ function finishCheck()
 	{
 		location.reload();
 	}
+}
+
+function loadTexture(path)
+{
+	var loader = new THREE.TextureLoader();
+	var texture = loader.load(path);
+	return texture;
 }
 
 /**
