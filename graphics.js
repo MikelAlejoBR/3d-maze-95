@@ -98,7 +98,14 @@ function generateCeilingFloor(MAZESIZE)
 	scene.add(floor);
 
 	var ceilingMaterial = new THREE.MeshBasicMaterial();
+	var ceilingTexture = loadTexture("textures/cementTexture.png");
+	ceilingTexture.wrapS = THREE.RepeatWrapping;
+	ceilingTexture.wrapT = THREE.RepeatWrapping;
+	ceilingTexture.repeat.x = 5;
+	ceilingTexture.repeat.y = 5;
+
 	ceilingMaterial.color.setHex(0xD3D3D3);
+	ceilingMaterial.map = ceilingTexture;
 
 	var ceiling = new THREE.Mesh(planeGeometry, ceilingMaterial);
 	ceiling.rotation.x = halfPi;
