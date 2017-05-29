@@ -61,7 +61,13 @@ function init()
 	generateSurroundingWalls(MAZESIZE);
 
 	var finBoxGeo = new THREE.BoxGeometry(0.25, 0.25, 0.25);
-	var finBoxMat = new THREE.MeshBasicMaterial({color: 0x0000ff});
+	var finBoxMat = new THREE.MeshBasicMaterial({color: 0xffffff});
+	var finBoxTex = loadTexture("textures/finish.png");
+	finBoxTex.wrapS = THREE.RepeatWrapping;
+	finBoxTex.wrapT = THREE.RepeatWrapping;
+
+	finBoxMat.map = finBoxTex;
+
 	var finishBox = new THREE.Mesh(finBoxGeo, finBoxMat);
 	finishBox.position.set(MAZESIZE - 1, 0.25, MAZESIZE - 1);
 	scene.add(finishBox);

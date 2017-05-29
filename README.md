@@ -17,3 +17,7 @@ idea of Windows 95's 3D maze screen saver.
 - [Cement texture](
     https://www.brusheezy.com/patterns/30268-texture-pattern-minimal-concrete-cement-pattern
   ) thanks to [Fausto Sammali](https://www.brusheezy.com/members/gullrat).
+
+- [Checkboard pattern](
+    https://en.wikipedia.org/wiki/File:Checkerboard_pattern.svg
+  ) thanks to [Indolences](https://commons.wikimedia.org/wiki/User:Indolences).
